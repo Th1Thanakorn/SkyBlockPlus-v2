@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 
 Installation information
 =======
@@ -23,3 +24,7 @@ Additional Resources:
 ==========
 Community Documentation: https://docs.neoforged.net/  
 NeoForged Discord: https://discord.neoforged.net/
+=======
+# SkyBlockPlus-v2
+A simple Minecraft mod for hypixel skyblock (again)
+>>>>>>> 44bb5b100936793f737bc78b7d06177554c71668
