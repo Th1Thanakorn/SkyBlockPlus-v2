@@ -1,0 +1,13 @@
+{
+  "itemGroup.skyblockplus": "Example Mod Tab",
+  "block.skyblockplus.example_block": "Example Block",
+  "item.skyblockplus.example_item": "Example Item",
+
+  "skyblockplus.configuration.title": "SkyBlockPlus Configs",
+  "skyblockplus.configuration.section.skyblockplus.common.toml": "SkyBlockPlus Configs",
+  "skyblockplus.configuration.section.skyblockplus.common.toml.title": "SkyBlockPlus Configs",
+  "skyblockplus.configuration.items": "Item List",
+  "skyblockplus.configuration.logDirtBlock": "Log Dirt Block",
+  "skyblockplus.configuration.magicNumberIntroduction": "Magic Number Text",
+  "skyblockplus.configuration.magicNumber": "Magic Number"
+}
