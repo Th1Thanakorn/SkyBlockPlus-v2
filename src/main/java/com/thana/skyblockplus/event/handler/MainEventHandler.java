@@ -6,7 +6,7 @@ import com.thana.skyblockplus.gui.widget.button.ItemButton;
 import com.thana.skyblockplus.util.TimeUtils;
 import com.thana.skyblockplus.util.skyblock.ItemUtil;
 import com.thana.skyblockplus.util.skyblock.api.BazaarAPI;
-import com.thana.skyblockplus.util.skyblock.api.BazaarAPIUtil;
+import com.thana.skyblockplus.util.skyblock.api.SkyBlockAPIUtil;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.events.GuiEventListener;
@@ -64,10 +64,14 @@ public class MainEventHandler {
         }
 
         ItemStack stack = event.getItemStack();
+//        if (InputConstants.isKeyDown(InputConstants.KEY_LSHIFT)) {
+//            event.getToolTip().add(at++, Component.literal(ItemUtil.getSkyBlockItemId(stack)));
+//        }
+
         if (stack.isEmpty()) return;
         String itemId = ItemUtil.getSkyBlockItemId(stack);
         if (itemId == null || itemId.isEmpty()) return;
-        BazaarAPI.Data data = BazaarAPIUtil.BAZAAR_DATA.get(itemId);
+        BazaarAPI.Data data = SkyBlockAPIUtil.BAZAAR_DATA.get(itemId);
         if (data == null) return;
 
         if (InputConstants.isKeyDown(InputConstants.KEY_LSHIFT)) {
@@ -76,15 +80,15 @@ public class MainEventHandler {
             double buyCurrent = stack.getCount() * data.buyPrice();
             double sellCurrent = stack.getCount() * data.sellPrice();
 
-            event.getToolTip().add(at++, Component.literal("Buy/Sell (Stack): ").append(Component.literal(PRICE_FORMAT.format(buyStack)).withStyle(ChatFormatting.GOLD)).append(Component.literal("/").withStyle(ChatFormatting.YELLOW)).append(Component.literal(PRICE_FORMAT.format(sellStack)).withStyle(ChatFormatting.GOLD)).append(Component.literal(" coins")));
+            event.getToolTip().add(at++, Component.literal(ChatFormatting.GRAY + "Buy/Sell (Stack): ").append(Component.literal(PRICE_FORMAT.format(buyStack)).withStyle(ChatFormatting.GOLD)).append(Component.literal("/").withStyle(ChatFormatting.YELLOW)).append(Component.literal(PRICE_FORMAT.format(sellStack)).withStyle(ChatFormatting.GOLD)).append(Component.literal(" coins").withStyle(ChatFormatting.GRAY)));
             if (stack.getCount() > 1 && stack.getCount() < 64) {
-                event.getToolTip().add(at++, Component.literal("Buy/Sell (Current): ").append(Component.literal(PRICE_FORMAT.format(buyCurrent)).withStyle(ChatFormatting.GOLD)).append(Component.literal("/").withStyle(ChatFormatting.YELLOW).append(Component.literal(PRICE_FORMAT.format(sellCurrent)).withStyle(ChatFormatting.GOLD)).append(Component.literal(" coins"))));
+                event.getToolTip().add(at++, Component.literal(ChatFormatting.GRAY + "Buy/Sell (Current): ").append(Component.literal(PRICE_FORMAT.format(buyCurrent)).withStyle(ChatFormatting.GOLD)).append(Component.literal("/").withStyle(ChatFormatting.YELLOW).append(Component.literal(PRICE_FORMAT.format(sellCurrent)).withStyle(ChatFormatting.GOLD)).append(Component.literal(" coins").withStyle(ChatFormatting.GRAY))));
             }
-            event.getToolTip().add(at++, Component.literal("Buy/Sell (One): ").append(Component.literal(PRICE_FORMAT.format(data.buyPrice())).withStyle(ChatFormatting.GOLD)).append(Component.literal("/").withStyle(ChatFormatting.YELLOW)).append(Component.literal(PRICE_FORMAT.format(data.sellPrice())).withStyle(ChatFormatting.GOLD)).append(Component.literal(" coins")));
-            event.getToolTip().add(at, Component.literal("Last Updated: " + ChatFormatting.WHITE + TimeUtils.getRelativeTime(BazaarAPIUtil.lastUpdated)));
+            event.getToolTip().add(at++, Component.literal(ChatFormatting.GRAY + "Buy/Sell (One): ").append(Component.literal(PRICE_FORMAT.format(data.buyPrice())).withStyle(ChatFormatting.GOLD)).append(Component.literal("/").withStyle(ChatFormatting.YELLOW)).append(Component.literal(PRICE_FORMAT.format(data.sellPrice())).withStyle(ChatFormatting.GOLD)).append(Component.literal(" coins").withStyle(ChatFormatting.GRAY)));
+            event.getToolTip().add(at, Component.literal(ChatFormatting.GRAY +"Last Updated: " + ChatFormatting.WHITE + TimeUtils.getRelativeTime(SkyBlockAPIUtil.bzLastUpdated)));
         }
         else {
-            event.getToolTip().add(at, Component.literal("Press <SHIFT> to view Bazaar Buy/Sell"));
+            event.getToolTip().add(at, Component.literal(ChatFormatting.GRAY +"Press <SHIFT> to view Bazaar Buy/Sell"));
         }
     }
 }

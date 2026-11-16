@@ -1,7 +1,7 @@
 package com.thana.skyblockplus.event.handler;
 
 import com.thana.skyblockplus.SkyBlockPlus;
-import com.thana.skyblockplus.util.skyblock.api.BazaarAPIUtil;
+import com.thana.skyblockplus.util.skyblock.api.SkyBlockAPIUtil;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.scores.DisplaySlot;
@@ -30,7 +30,10 @@ public class SkyBlockEventHandler {
         long now = System.currentTimeMillis();
         if (isSkyBlock && now-lastBazaarRefresh >= 120_000L) {
             lastBazaarRefresh = now;
-            BazaarAPIUtil.getBazaarData();
+            SkyBlockAPIUtil.getBazaarData();
+        }
+        if (SkyBlockAPIUtil.ITEM_DATA.isEmpty()) {
+            SkyBlockAPIUtil.getItemData();
         }
     }
 }

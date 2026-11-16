@@ -1,9 +1,9 @@
 package com.thana.skyblockplus.util.skyblock.api;
 
 import com.google.gson.Gson;
+import com.thana.skyblockplus.util.ThreadUtil;
 import org.apache.commons.io.IOUtils;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URI;
@@ -11,28 +11,22 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.atomic.AtomicBoolean;
 
-public class BazaarAPIUtil {
+public class SkyBlockAPIUtil {
 
     private static final Gson GSON = new Gson();
-    public static volatile long lastUpdated = -1L;
+    public static volatile long bzLastUpdated = -1L;
     public static volatile Map<String, BazaarAPI.Data> BAZAAR_DATA = new HashMap<>();
+    public static volatile Map<String, ItemAPI.Item> ITEM_DATA = new HashMap<>();
 
-    private static final ExecutorService EXECUTOR = Executors.newSingleThreadExecutor();
-    private static final AtomicBoolean refreshing = new AtomicBoolean(false);
+    public static final String BAZAAR_URL = "https://api.hypixel.net/skyblock/bazaar";
+    public static final String ITEM_URL = "https://api.hypixel.net/resources/skyblock/items";
 
     public static void getBazaarData() {
-        if (!refreshing.compareAndSet(false, true)) {
-            return;
-        }
-        CompletableFuture.runAsync(() -> {
+        ThreadUtil.runAsync(() -> {
             try {
                 Map<String, BazaarAPI.Data> updated = new HashMap<>();
-                URL url = URI.create("https://api.hypixel.net/skyblock/bazaar").toURL();
+                URL url = URI.create(BAZAAR_URL).toURL();
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                 connection.setConnectTimeout(5000);
                 connection.setReadTimeout(10000);
@@ -50,7 +44,7 @@ public class BazaarAPIUtil {
                         updated.put(entry.getKey(), new BazaarAPI.Data(buyPrice, sellPrice));
                     }
 
-                    lastUpdated = bazaar.getLastUpdated();
+                    bzLastUpdated = bazaar.getLastUpdated();
                     BAZAAR_DATA = Map.copyOf(updated);
                 }
                 finally {
@@ -60,9 +54,31 @@ public class BazaarAPIUtil {
             catch (Exception exception) {
                 exception.printStackTrace();
             }
-            finally {
-                refreshing.set(false);
+        });
+    }
+
+    public static void getItemData() {
+        ThreadUtil.runAsync(() -> {
+            try {
+                Map<String, ItemAPI.Item> updated = new HashMap<>();
+                URL url = URI.create(ITEM_URL).toURL();
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection.setConnectTimeout(5000);
+                connection.setReadTimeout(10000);
+
+                try (InputStream input = connection.getInputStream()) {
+                    ItemAPI itemAPI = GSON.fromJson(IOUtils.toString(input, StandardCharsets.UTF_8), ItemAPI.class);
+                    for (ItemAPI.Item item : itemAPI.getItems()) {
+                        updated.put(item.getId(), item);
+                    }
+                    ITEM_DATA = Map.copyOf(updated);
+                }
+                finally {
+                    connection.disconnect();
+                }
+            } catch (Exception exception) {
+                exception.printStackTrace();
             }
-        }, EXECUTOR);
+        });
     }
 }
